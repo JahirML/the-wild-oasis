@@ -18,6 +18,7 @@ import { getcountry } from "../../services/apiCountries";
 import useCountries from "../guests/useCountries";
 
 import { createGuest } from "../../services/ApiGuests";
+import toast from "react-hot-toast";
 
 const StyledSelect = styled.select`
   /* width: ; */
@@ -31,12 +32,11 @@ const StyledSelect = styled.select`
 function CreateBookingForm({ onCloseModal }) {
   const [wantBreakfast, setWantBreakFast] = useState(false);
   const [isPaid, setIsPaid] = useState(false);
-  // const [countrystate, setCountry] = useState("");
+
   const [userExist, setUserExist] = useState(false);
 
   const { cabins = {}, isLoading: isLoadingCabins } = useCabins();
   const { guests, isLoadingGuests } = useGuests();
-  // const { createUser, isCreating: isCreatingGuest } = useCreateGuest();
 
   const { settings = {}, isLoading: isLoadingSettings } = useSettings();
   const { createBooking, isLoading: isCreatingBooking } = useCreatebooking();
@@ -91,10 +91,23 @@ function CreateBookingForm({ onCloseModal }) {
         nationality: country,
         countryFlag: `https://flagcdn.com/${countryCode}.svg`,
       };
+      const emailExist = guests.find((guest) => guest.email === email);
       const guestExist = guests.find(
-        (guest) => guest.nationalID === nationalID
+        (guest) =>
+          guest.nationalID === nationalID && country === guest.nationality
       );
-
+      if (emailExist) {
+        toast.error(
+          "This email is already used, please provide a another email"
+        );
+        onCloseModal?.();
+        return;
+      }
+      if (guestExist) {
+        toast.error("This user already exist, please provide a valid user");
+        onCloseModal?.();
+        return;
+      }
       if (!guestExist) guestId = await createGuest(guestData);
     } else {
       guestId = guests.find((guest) => fullName === guest.fullName)?.id;
