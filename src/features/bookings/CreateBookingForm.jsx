@@ -45,14 +45,15 @@ function CreateBookingForm({ onCloseModal }) {
 
   const { register, handleSubmit, reset, getValues, formState } = useForm();
   const { errors } = formState;
+  // console.log(countries);
 
-  const countriesOrder = countries.map((coun) => coun.name.common).sort();
+  const countriesOrder = countries?.map((coun) => coun.name.common).sort();
 
   if (
     isLoadingCabins |
     isLoadingSettings |
-    isLoadingGuests |
-    isLoadingCountries
+    isLoadingGuests
+    // isLoadingCountries
   )
     return <Spinner />;
 
@@ -76,13 +77,12 @@ function CreateBookingForm({ onCloseModal }) {
       observations,
       cabinName,
     } = data;
-
     const created_at = new Date().toISOString();
-    const countryData = await getcountry(country);
-
-    const countryCode = countryData.cca2.toLowerCase();
 
     if (!userExist) {
+      const countryData = await getcountry(country);
+
+      const countryCode = countryData.cca2.toLowerCase();
       const guestData = {
         created_at,
         fullName,
@@ -98,9 +98,9 @@ function CreateBookingForm({ onCloseModal }) {
       );
       if (emailExist) {
         toast.error(
-          "This email is already used, please provide a another email"
+          "This email is already used, please provide  another email"
         );
-        onCloseModal?.();
+        // onCloseModal?.();
         return;
       }
       if (guestExist) {
@@ -110,7 +110,8 @@ function CreateBookingForm({ onCloseModal }) {
       }
       if (!guestExist) guestId = await createGuest(guestData);
     } else {
-      guestId = guests.find((guest) => fullName === guest.fullName)?.id;
+      guestId = await guests.find((guest) => fullName === guest.fullName)?.id;
+      console.log(guestId);
     }
 
     const numNights = differenceInDays(new Date(endDate), new Date(startDate));

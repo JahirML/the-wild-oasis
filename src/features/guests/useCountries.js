@@ -6,7 +6,7 @@ function useCountries() {
     queryKey: ["country"],
     queryFn: getCountries,
   });
-  //   console.log(countries);
+  // console.log(countries);
   return { countries, isLoadingCountries };
 }
 
