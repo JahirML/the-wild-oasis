@@ -4,18 +4,28 @@ import Form from "../../ui/Form";
 import FormRow from "../../ui/FormRow";
 import Input from "../../ui/Input";
 import useSignup from "./useSignup";
+import { useNavigate } from "react-router";
 
 // Email regex: /\S+@\S+\.\S+/
 
 function SignupForm() {
   const { register, handleSubmit, formState, getValues, reset } = useForm();
   const { errors } = formState;
+  const navigate = useNavigate();
 
   const { signup, isLoading } = useSignup();
 
   function onSubmit({ fullName, email, password }) {
     // console.log(fullName, email, password);
-    signup({ fullName, email, password }, { onSettled: reset });
+    signup(
+      { fullName, email, password },
+      {
+        onSuccess: () => {
+          reset();
+          navigate("/auth");
+        },
+      }
+    );
   }
 
   return (

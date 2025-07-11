@@ -45,17 +45,17 @@ function CreateBookingForm({ onCloseModal }) {
 
   const { register, handleSubmit, reset, getValues, formState } = useForm();
   const { errors } = formState;
-  // console.log(countries);
-
-  const countriesOrder = countries?.map((coun) => coun.name.common).sort();
+  console.log(countries);
 
   if (
     isLoadingCabins |
     isLoadingSettings |
-    isLoadingGuests
-    // isLoadingCountries
+    isLoadingGuests |
+    isLoadingCountries
   )
     return <Spinner />;
+
+  const countriesOrder = countries?.map((coun) => coun.name.common).sort();
 
   function getCabinCapacity(cabinName) {
     const maxCapacity = cabins.find(
